@@ -22,49 +22,12 @@ function createData(
   return { id, date, name, shipTo, paymentMethod, amount };
 }
 
-const rows = [
-  createData(
-    0,
-    '16 Mar, 2019',
-    'Elvis Presley',
-    'Tupelo, MS',
-    'VISA ⠀•••• 3719',
-    312.44,
-  ),
-  createData(
-    1,
-    '16 Mar, 2019',
-    'Paul McCartney',
-    'London, UK',
-    'VISA ⠀•••• 2574',
-    866.99,
-  ),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(
-    3,
-    '16 Mar, 2019',
-    'Michael Jackson',
-    'Gary, IN',
-    'AMEX ⠀•••• 2000',
-    654.39,
-  ),
-  createData(
-    4,
-    '15 Mar, 2019',
-    'Bruce Springsteen',
-    'Long Branch, NJ',
-    'VISA ⠀•••• 5919',
-    212.79,
-  ),
-];
-
-
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault();
 }
 
 export default function Orders() {
-  const [waveData, setWaveData] = useState<WaveData>();
+  const [waveData, setWaveData] = useState<WaveData | undefined>(undefined);
 
   useEffect(() => {
     const getOrders = async () => {
@@ -86,23 +49,33 @@ export default function Orders() {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>うねり</TableCell>
-            <TableCell>うねりの向き</TableCell>
-            <TableCell>波</TableCell>
+            <TableCell>時間</TableCell>
+            <TableCell>波の高さ</TableCell>
             <TableCell>波の向き</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            <TableCell>うねりの高さ</TableCell>
+            <TableCell>うねりの向き</TableCell>
+            <TableCell>風波</TableCell>
+            <TableCell>風波の向き</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
-            </TableRow>
-          ))}
+        {waveData && waveData.time && waveData.time.map((time, index) => {
+          // 3時間おきにデータを出力するために、インデックスが3で割り切れる場合のみ行を生成
+          if (index % 3 === 0) {
+            return (
+              <TableRow key={time}>
+                <TableCell>{time}</TableCell>
+                <TableCell>{waveData.wave_height[index]}</TableCell>
+                <TableCell>{getDirectionFromAngle(waveData.wave_direction[index])}°</TableCell>
+                <TableCell>{waveData.swell_wave_height[index]}</TableCell>
+                <TableCell>{getDirectionFromAngle(waveData.swell_wave_direction[index])}°</TableCell>
+                <TableCell>{waveData.wind_wave_height[index]}</TableCell>
+                <TableCell>{getDirectionFromAngle(waveData.wind_wave_direction[index])}°</TableCell>
+              </TableRow>
+            );
+          }
+          return null;
+        })}
         </TableBody>
       </Table>
       <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
