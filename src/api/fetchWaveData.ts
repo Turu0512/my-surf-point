@@ -1,6 +1,7 @@
 // import { Order } from '../types';
 
 const KOIGAURA_API_URL = 'https://marine-api.open-meteo.com/v1/marine?latitude=31.412205&longitude=131.343669&current=swell_wave_height&hourly=wave_height,swell_wave_height&timezone=Asia%2FTokyo';
+const KOIGAURA_API_URL = 'https://marine-api.open-meteo.com/v1/marine?latitude=31.412205&longitude=131.343669&current=swell_wave_height&hourly=wave_height,wave_direction,wind_wave_height,wind_wave_direction,swell_wave_height,swell_wave_direction&timezone=Asia%2FTokyo';
 
 export const fetchOrders = async () => {
   try {
