@@ -1,16 +1,16 @@
-// import { Order } from '../types';
+import { WaveData } from '../types/index';
 
-const KOIGAURA_API_URL = 'https://marine-api.open-meteo.com/v1/marine?latitude=31.412205&longitude=131.343669&current=swell_wave_height&hourly=wave_height,swell_wave_height&timezone=Asia%2FTokyo';
 const KOIGAURA_API_URL = 'https://marine-api.open-meteo.com/v1/marine?latitude=31.412205&longitude=131.343669&current=swell_wave_height&hourly=wave_height,wave_direction,wind_wave_height,wind_wave_direction,swell_wave_height,swell_wave_direction&timezone=Asia%2FTokyo';
 
-export const fetchOrders = async () => {
+export const fetchWaveData = async ():Promise<WaveData> => {
   try {
     const response = await fetch(`${KOIGAURA_API_URL}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const orders = await response.json();
-    return orders;
+    const responseData = await response.json();
+    const waveData: WaveData = responseData.hourly;
+    return waveData;
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
     throw error;
