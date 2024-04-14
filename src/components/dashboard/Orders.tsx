@@ -7,8 +7,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
 
-import { fetchOrders } from '../../api/fetchWaveData';
-// import { Order } from '../../types';
+import { fetchWaveData } from '../../api/fetchWaveData';
+import { WaveData } from '../../types/index';
 
 // Generate Order Data
 function createData(
@@ -64,12 +64,12 @@ function preventDefault(event: React.MouseEvent) {
 }
 
 export default function Orders() {
-  const [waveData, setWaveData] = useState([]);
+  const [waveData, setWaveData] = useState<WaveData>();
 
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const ordersData = await fetchOrders();
+        const ordersData = await fetchWaveData();
         setWaveData(ordersData);
         console.log(ordersData);
       } catch (error) {
