@@ -5,7 +5,7 @@ FROM node:16
 WORKDIR /app
 
 # アプリケーションの依存ファイルをコンテナ内にコピー
-COPY package.json yarn.lock ./
+COPY yarn.lock ./
 
 # 依存関係のインストール
 RUN yarn install
