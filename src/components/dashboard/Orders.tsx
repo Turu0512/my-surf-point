@@ -10,18 +10,6 @@ import Title from './Title';
 import { fetchWaveData } from '../../api/fetchWaveData';
 import { WaveData } from '../../types/index';
 
-// Generate Order Data
-function createData(
-  id: number,
-  date: string,
-  name: string,
-  shipTo: string,
-  paymentMethod: string,
-  amount: number,
-) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
-
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault();
 }
