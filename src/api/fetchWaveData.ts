@@ -1,12 +1,25 @@
 import { WaveData } from '../types/index';
 import { fetchWeatherApi } from 'openmeteo';
 
+const point = 'POINT1'; // これは選択または入力によって動的に変更されることがあります。
+const coords = process.env[`REACT_APP_${point}_COORDS`] ?? '123,123'
+console.log(coords)
+
+const [latitude, longitude] = coords.split(',');
+
 const params = {
-	"latitude": 31.4033,
-	"longitude": 131.3417,
-	"current": "swell_wave_height",
-	"hourly": ["wave_height", "wave_direction", "wind_wave_height", "wind_wave_direction", "swell_wave_height", "swell_wave_direction"],
-	"timezone": "Asia/Tokyo"
+  "latitude": latitude,
+  "longitude": longitude,
+  "current": "swell_wave_height",
+  "hourly": [
+    "wave_height",
+    "wave_direction",
+    "wind_wave_height",
+    "wind_wave_direction",
+    "swell_wave_height",
+    "swell_wave_direction"
+  ],
+  "timezone": "Asia/Tokyo"
 };
 const url = "https://marine-api.open-meteo.com/v1/marine";
 
