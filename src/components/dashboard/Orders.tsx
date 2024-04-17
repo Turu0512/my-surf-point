@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Title from './Title';
 
 import { fetchWaveData } from '../../api/fetchWaveData';
-import { WaveData } from '../../types/index';
+import { WaveData } from '../../types/wave';
 
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault();
@@ -29,14 +29,22 @@ function getDirectionFromAngle(angle: number): string {
 export default function Orders() {
   const [waveData, setWaveData] = useState<WaveData | undefined>(undefined);
 
+  const [fetchFailed, setFetchFailed] = useState(false);
+
   useEffect(() => {
     const getOrders = async () => {
       try {
         const ordersData = await fetchWaveData();
-        setWaveData(ordersData);
-        console.log(ordersData);
+        if ('error' in ordersData) {
+          console.error(ordersData.message);
+          setFetchFailed(true);
+        } else {
+          setWaveData(ordersData);
+          console.log(ordersData);
+        }
       } catch (error) {
         console.error(error);
+        setFetchFailed(true);
       }
     };
 
@@ -59,23 +67,29 @@ export default function Orders() {
           </TableRow>
         </TableHead>
         <TableBody>
-        {waveData && waveData.time && waveData.time.map((time, index) => {
-          // 3時間おきにデータを出力するために、インデックスが3で割り切れる場合のみ行を生成
-          if (index % 3 === 0) {
-            return (
-              <TableRow key={time}>
-                <TableCell>{time}</TableCell>
-                <TableCell>{waveData.wave_height[index]}</TableCell>
-                <TableCell>{getDirectionFromAngle(waveData.wave_direction[index])}°</TableCell>
-                <TableCell>{waveData.swell_wave_height[index]}</TableCell>
-                <TableCell>{getDirectionFromAngle(waveData.swell_wave_direction[index])}°</TableCell>
-                <TableCell>{waveData.wind_wave_height[index]}</TableCell>
-                <TableCell>{getDirectionFromAngle(waveData.wind_wave_direction[index])}°</TableCell>
-              </TableRow>
-            );
-          }
-          return null;
-        })}
+        {fetchFailed ? (
+          <TableRow>
+            <TableCell colSpan={7}>情報の取得に失敗しました</TableCell>
+          </TableRow>
+        ) : (
+          waveData && waveData.time && waveData.time.map((time, index) => {
+            // 3時間おきにデータを出力するために、インデックスが3で割り切れる場合のみ行を生成
+            if (index % 3 === 0) {
+              return (
+                <TableRow key={time}>
+                  <TableCell>{time}</TableCell>
+                  <TableCell>{waveData.wave_height[index]}</TableCell>
+                  <TableCell>{getDirectionFromAngle(waveData.wave_direction[index])}°</TableCell>
+                  <TableCell>{waveData.swell_wave_height[index]}</TableCell>
+                  <TableCell>{getDirectionFromAngle(waveData.swell_wave_direction[index])}°</TableCell>
+                  <TableCell>{waveData.wind_wave_height[index]}</TableCell>
+                  <TableCell>{getDirectionFromAngle(waveData.wind_wave_direction[index])}°</TableCell>
+                </TableRow>
+              );
+            }
+            return null;
+          })
+        )}
         </TableBody>
       </Table>
       <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
