@@ -27,7 +27,7 @@ function getDirectionFromAngle(angle: number): string {
 
 
 export default function Orders() {
-  const [waveData, setWaveData] = useState<WaveData | undefined>(undefined);
+  const [waveData, setWaveData] = useState(undefined);
 
   const [fetchFailed, setFetchFailed] = useState(false);
 
