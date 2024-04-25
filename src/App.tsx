@@ -7,6 +7,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/points/:point" element={<Dashboard />} />
       </Routes>
     </Router>
   );
