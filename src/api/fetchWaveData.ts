@@ -1,27 +1,28 @@
 import { WaveData } from '../types/wave';
 import { ErrorCode } from '../types/error';
 
-const point = 'POINT1'; // これは選択または入力によって動的に変更されることがあります。
-const coords = process.env[`REACT_APP_${point}_COORDS`] ?? '000,000';
-console.log(coords)
+export const fetchWaveData = async (point:any): Promise<WaveData | ErrorCode> => { 
+  console.log(point)// これは選択または入力によって動的に変更されることがあります。
+  const coords = process.env[`REACT_APP_${point.toUpperCase()}_COORDS`] ?? '000,000';
+  console.log(coords)
 
-const [latitude, longitude] = coords.split(',');
+  const [latitude, longitude] = coords.split(',');
 
-const baseUrl = "https://marine-api.open-meteo.com/v1/marine";
+  const baseUrl = "https://marine-api.open-meteo.com/v1/marine";
 
-const params = {
-  latitude: latitude,
-  longitude: longitude,
-  current: "swell_wave_height",
-  hourly: ["wave_height", "wave_direction", "wind_wave_height", "wind_wave_direction", "swell_wave_height", "swell_wave_direction"],
-  timezone: "Asia%2FTokyo"
-};
+  const params = {
+    latitude: latitude,
+    longitude: longitude,
+    current: "swell_wave_height",
+    hourly: ["wave_height", "wave_direction", "wind_wave_height", "wind_wave_direction", "swell_wave_height", "swell_wave_direction"],
+    timezone: "Asia%2FTokyo"
+  };
 
 const point_api_url = `${baseUrl}?latitude=${params.latitude}&longitude=${params.longitude}&current=${params.current}&hourly=${params.hourly.join(',')}&timezone=${params.timezone}`;
 
 console.log(point_api_url);
 
-export const fetchWaveData = async (): Promise<WaveData | ErrorCode> => {
+
   if (longitude === '000') {return { error: true, code: 'INVALID_LONGITUDE', message: 'Invalid longitude' };  }
   try {
     const response = await fetch(`${point_api_url}`);
