@@ -30,8 +30,10 @@ function getDirectionFromAngle(angle: number): string {
 
 export default function Orders() {
   const [waveData, setWaveData] = useState<WaveData | ErrorCode>();
-  const { point } = useParams();
-  
+  const { point } = useParams() || 'POINT1';
+  const pointName = process.env[`REACT_APP_${point!.toUpperCase()}_POINT`] ?? 'ポイント情報が正しくありません';
+
+
   useEffect(() => {
     const getOrders = async () => {
       try {
@@ -49,7 +51,7 @@ export default function Orders() {
 
   return (
     <React.Fragment>
-      <Title>恋ヶ浦</Title>
+      <Title>{pointName}</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
