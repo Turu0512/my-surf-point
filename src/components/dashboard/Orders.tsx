@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -29,11 +30,13 @@ function getDirectionFromAngle(angle: number): string {
 
 export default function Orders() {
   const [waveData, setWaveData] = useState<WaveData | ErrorCode>();
-
+  const { point } = useParams();
+  
   useEffect(() => {
     const getOrders = async () => {
       try {
-        const ordersData = await fetchWaveData();
+        console.log(point);
+        const ordersData = await fetchWaveData(point);
         setWaveData(ordersData);
         console.log(ordersData);
       } catch (error) {
