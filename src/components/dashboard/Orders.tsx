@@ -47,7 +47,7 @@ export default function Orders() {
     };
 
     getOrders();
-  }, []);
+  }, [point]);
 
   return (
     <React.Fragment>
