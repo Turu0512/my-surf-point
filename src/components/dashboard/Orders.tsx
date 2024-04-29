@@ -9,7 +9,9 @@ import TableRow from '@mui/material/TableRow';
 import Title from './Title';
 
 import { fetchWaveData } from '../../api/fetchWaveData';
+import { fetchWindData } from '../../api/fetchWindData';
 import { WaveData } from '../../types/wave';
+import { WindData } from '../../types/wind'; // Assuming you have a WindData type
 import { ErrorCode } from '../../types/error';
 
 function preventDefault(event: React.MouseEvent) {
@@ -30,6 +32,7 @@ function getDirectionFromAngle(angle: number): string {
 
 export default function Orders() {
   const [waveData, setWaveData] = useState<WaveData | ErrorCode>();
+  const [windData, setWindData] = useState<WindData | ErrorCode>();
   const { point } = useParams() || 'POINT1';
   const pointName = process.env[`REACT_APP_${point!.toUpperCase()}_POINT`] ?? 'ポイント情報が正しくありません';
 
@@ -38,9 +41,12 @@ export default function Orders() {
     const getOrders = async () => {
       try {
         console.log(point);
-        const ordersData = await fetchWaveData(point);
-        setWaveData(ordersData);
-        console.log(ordersData);
+        const waveDataList = await fetchWaveData(point);
+        const windsDataList = await fetchWindData(point);
+        setWaveData(waveDataList);
+        setWindData(windsDataList);
+        console.log(waveDataList);
+        console.log(windsDataList);
       } catch (error) {
         console.error(error);
       }
@@ -56,12 +62,10 @@ export default function Orders() {
         <TableHead>
           <TableRow>
             <TableCell>時間</TableCell>
-            <TableCell>波の高さ</TableCell>
             <TableCell>波の向き</TableCell>
             <TableCell>うねりの高さ</TableCell>
-            <TableCell>うねりの向き</TableCell>
-            <TableCell>風波</TableCell>
-            <TableCell>風波の向き</TableCell>
+            <TableCell>風速(m/s)</TableCell>
+            <TableCell>風向き</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -71,12 +75,14 @@ export default function Orders() {
             return (
               <TableRow key={time}>
                 <TableCell>{time}</TableCell>
-                <TableCell>{waveData.wave_height[index]}</TableCell>
-                <TableCell>{getDirectionFromAngle(waveData.wave_direction[index])}°</TableCell>
                 <TableCell>{waveData.swell_wave_height[index]}</TableCell>
                 <TableCell>{getDirectionFromAngle(waveData.swell_wave_direction[index])}°</TableCell>
-                <TableCell>{waveData.wind_wave_height[index]}</TableCell>
-                <TableCell>{getDirectionFromAngle(waveData.wind_wave_direction[index])}°</TableCell>
+                {windData && 'time' in windData && windData.time[index] === time && (
+            <>
+              <TableCell>{windData.wind_speed_10m[index]}</TableCell>
+              <TableCell>{getDirectionFromAngle(windData.wind_direction_10m[index])}°</TableCell>
+            </>
+          )}
               </TableRow>
             );
           }
