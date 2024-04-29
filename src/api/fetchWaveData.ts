@@ -1,10 +1,9 @@
 import { WaveData } from '../types/wave';
 import { ErrorCode } from '../types/error';
 
-export const fetchWaveData = async (point:any): Promise<WaveData | ErrorCode> => { 
-  console.log(point)// これは選択または入力によって動的に変更されることがあります。
+export const fetchWaveData = async (point:any): Promise<WaveData | ErrorCode> => {
+  
   const coords = process.env[`REACT_APP_${point.toUpperCase()}_COORDS`] ?? '000,000';
-  console.log(coords)
 
   const [latitude, longitude] = coords.split(',');
 
