@@ -83,6 +83,7 @@ export default function Orders() {
           {dates.map((date, index) => (
             <Tab label={date} key={index} />
           ))}
+          <Tab label="週間予報" />
         </Tabs>
       </Box>
       {dates.map((date, index) => (
@@ -120,7 +121,39 @@ export default function Orders() {
           </Table>
         </div>
       ))}
-    </Box>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>時間</TableCell>
+              <TableCell>波の向き</TableCell>
+              <TableCell>うねりの高さ</TableCell>
+              <TableCell>風速(m/s)</TableCell>
+              <TableCell>風向き</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {waveData && 'time' in waveData && waveData.time && waveData.time.map((time, index) => {
+            // 3時間おきにデータを出力するために、インデックスが3で割り切れる場合のみ行を生成
+            if (index % 3 === 0) {
+              return (
+                <TableRow key={time}>
+                  <TableCell>{time}</TableCell>
+                  <TableCell>{waveData.swell_wave_height[index]}</TableCell>
+                  <TableCell>{getDirectionFromAngle(waveData.swell_wave_direction[index])}°</TableCell>
+                  {windData && 'time' in windData && windData.time[index] === time && (
+                    <>
+                      <TableCell>{windData.wind_speed_10m[index]}</TableCell>
+                      <TableCell>{getDirectionFromAngle(windData.wind_direction_10m[index])}°</TableCell>
+                    </>
+                  )}
+                </TableRow>
+              );
+            }
+            return null;
+          })}
+          </TableBody>
+        </Table>
+      </Box>
     </React.Fragment>
   );
 }
