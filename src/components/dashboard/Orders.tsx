@@ -17,10 +17,6 @@ import { WaveData } from '../../types/wave';
 import { WindData } from '../../types/wind'; // Assuming you have a WindData type
 import { ErrorCode } from '../../types/error';
 
-function preventDefault(event: React.MouseEvent) {
-  event.preventDefault();
-}
-
 function getDirectionFromAngle(angle: number): string {
   const directions = [
     '北', '北北東', '北東', '東北東',
@@ -38,10 +34,13 @@ export default function Orders() {
   const [windData, setWindData] = useState<WindData | ErrorCode>();
   const { point } = useParams() || 'POINT1';
   const pointName = process.env[`REACT_APP_${point!.toUpperCase()}_POINT`] ?? 'ポイント情報が正しくありません';
-  const [value, setValue] = useState(0);
+  const [selectDate, setSelectDate] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    console.log(newValue);
+    console.log(selectDate);
+    console.log(dates);
+    setSelectDate(newValue);
   };
 
    // 日付ごとのデータを抽出
@@ -59,13 +58,10 @@ export default function Orders() {
   useEffect(() => {
     const getOrders = async () => {
       try {
-        console.log(point);
         const waveDataList = await fetchWaveData(point);
         const windsDataList = await fetchWindData(point);
         setWaveData(waveDataList);
         setWindData(windsDataList);
-        console.log(waveDataList);
-        console.log(windsDataList);
       } catch (error) {
         console.error(error);
       }
@@ -79,7 +75,7 @@ export default function Orders() {
       <Title>{pointName}</Title>
       <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="wave data tabs">
+        <Tabs value={selectDate} onChange={handleChange} aria-label="wave data tabs">
           {dates.map((date, index) => (
             <Tab label={date} key={index} />
           ))}
@@ -87,13 +83,13 @@ export default function Orders() {
         </Tabs>
       </Box>
       {dates.map((date, index) => (
-        <div role="tabpanel" hidden={value !== index} key={index}>
+        <div role="tabpanel" hidden={selectDate !== index} key={index}>
           <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>時間</TableCell>
-                <TableCell>波の向き</TableCell>
                 <TableCell>うねりの高さ</TableCell>
+                <TableCell>うねりの向き</TableCell>
                 <TableCell>風速(m/s)</TableCell>
                 <TableCell>風向き</TableCell>
               </TableRow>
@@ -105,7 +101,7 @@ export default function Orders() {
                     <TableRow key={idx}>
                       <TableCell>{time.split('T')[1]}</TableCell>
                       <TableCell>{waveData.swell_wave_height[idx]}</TableCell>
-                      <TableCell>{waveData.swell_wave_direction[idx]}</TableCell>
+                      <TableCell>{getDirectionFromAngle(waveData.swell_wave_direction[idx])}</TableCell>
                       {windData && 'time' in windData && windData.time[idx] === time && (
                         <>
                           <TableCell>{windData.wind_speed_10m[idx]}</TableCell>
@@ -121,12 +117,13 @@ export default function Orders() {
           </Table>
         </div>
       ))}
-        <Table size="small">
+      {/* 週間予報 */}
+      {selectDate === dates.length ? (<Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>時間</TableCell>
-              <TableCell>波の向き</TableCell>
               <TableCell>うねりの高さ</TableCell>
+              <TableCell>うねりの向き</TableCell>
               <TableCell>風速(m/s)</TableCell>
               <TableCell>風向き</TableCell>
             </TableRow>
@@ -153,6 +150,8 @@ export default function Orders() {
           })}
           </TableBody>
         </Table>
+        ) : null
+      }
       </Box>
     </React.Fragment>
   );
