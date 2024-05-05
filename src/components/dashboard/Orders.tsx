@@ -37,9 +37,6 @@ export default function Orders() {
   const [selectDate, setSelectDate] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log(newValue);
-    console.log(selectDate);
-    console.log(dates);
     setSelectDate(newValue);
   };
 
