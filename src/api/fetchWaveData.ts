@@ -2,7 +2,7 @@ import { WaveData } from '../types/wave';
 import { ErrorCode } from '../types/error';
 
 export const fetchWaveData = async (point:any): Promise<WaveData | ErrorCode> => {
-
+  
   const coords = process.env[`REACT_APP_${point.toUpperCase()}_COORDS`] ?? '000,000';
 
   const [latitude, longitude] = coords.split(',');
@@ -19,9 +19,11 @@ export const fetchWaveData = async (point:any): Promise<WaveData | ErrorCode> =>
 
 const point_api_url = `${baseUrl}?latitude=${params.latitude}&longitude=${params.longitude}&current=${params.current}&hourly=${params.hourly.join(',')}&timezone=${params.timezone}`;
 
+console.log(point_api_url);
+
+
   if (longitude === '000') {return { error: true, code: 'INVALID_LONGITUDE', message: 'Invalid longitude' };  }
   try {
-    console.log(point_api_url);
     const response = await fetch(`${point_api_url}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
