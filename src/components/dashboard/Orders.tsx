@@ -32,7 +32,7 @@ function getDirectionFromAngle(angle: number): string {
 export default function Orders() {
   const [waveData, setWaveData] = useState<WaveData | ErrorCode>();
   const [windData, setWindData] = useState<WindData | ErrorCode>();
-  const { point } = useParams() || 'POINT1';
+  const { point = 'POINT1' } = useParams<{ point?: string }>();
   const pointName = process.env[`REACT_APP_${point!.toUpperCase()}_POINT`] ?? 'ポイント情報が正しくありません';
   const [selectDate, setSelectDate] = useState(0);
 
