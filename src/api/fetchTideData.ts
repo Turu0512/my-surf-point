@@ -7,10 +7,18 @@ export const fetchTideData = async (year: number, month: number, day: number) =>
     if (!response.ok) {
       throw new Error(`ネットワークレスポンスが正常ではありません: ${response.status}`);
     }
+    console.log('response:', response);
+    const text = await response.text();
+    console.log('取得したデータ（テキスト）:', text);
     
-    const data = await response.json();
-    console.log('取得したデータ:', data);
-    return data;
+    try {
+      const data = JSON.parse(text);
+      console.log('パースしたデータ:', data);
+      return data;
+    } catch (parseError) {
+      console.error('JSONのパースに失敗しました:', parseError);
+      throw new Error('レスポンスが有効なJSONではありません');
+    }
   } catch (error) {
     console.error('潮汐データの取得に失敗しました:', error);
     throw error;
