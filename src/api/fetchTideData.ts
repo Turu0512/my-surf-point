@@ -1,6 +1,7 @@
 export const fetchTideData = async (year: number, month: number, day: number) => {
   try {
-    const url = `/get_tide.php?pc=45&hc=2&yr=${year}&mn=${month}&dy=${day}&rg=week`;
+    const url = `https://tide736.net/api/get_tide.php?pc=45&hc=2&yr=${year}&mn=${month}&dy=${day}&rg=week`;
+    console.log('リクエストURL:', url);
     const response = await fetch(url);
     
     if (!response.ok) {
